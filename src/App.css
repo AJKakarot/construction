@@ -1,0 +1,358 @@
+/* App Container */
+.app {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Title */
+.title {
+  text-align: center;
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Products Card */
+.products-card {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.products-header {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr;
+  gap: 15px;
+  padding: 15px 0;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 20px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.header-product {
+  grid-column: 1;
+}
+
+.header-quantity {
+  grid-column: 2;
+  text-align: center;
+}
+
+.header-price {
+  grid-column: 3;
+  text-align: center;
+}
+
+.header-subtotal {
+  grid-column: 4;
+  text-align: right;
+}
+
+/* Product Row */
+.product-row {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr;
+  gap: 15px;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.product-row:last-child {
+  border-bottom: none;
+}
+
+.product-name {
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+/* Quantity Controls */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.quantity-display {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  min-width: 40px;
+  text-align: center;
+}
+
+.btn {
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-plus {
+  background: #4caf50;
+  color: white;
+}
+
+.btn-plus:hover {
+  background: #45a049;
+}
+
+.btn-minus {
+  background: #f44336;
+  color: white;
+}
+
+.btn-minus:hover {
+  background: #da190b;
+}
+
+.btn-minus:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Price Input */
+.price-input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  position: relative;
+}
+
+.currency-symbol {
+  font-weight: 600;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.price-input {
+  width: 100%;
+  max-width: 120px;
+  padding: 10px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  transition: border-color 0.3s ease;
+}
+
+.price-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.price-input::-webkit-inner-spin-button,
+.price-input::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+/* Subtotal */
+.subtotal {
+  text-align: right;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+/* Total Card */
+.total-card {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.total-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.subtotals-list {
+  margin-bottom: 25px;
+}
+
+.subtotal-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.subtotal-item:last-of-type {
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 15px;
+}
+
+.subtotal-product {
+  font-weight: 500;
+  color: #666;
+  font-size: 1rem;
+}
+
+.subtotal-value {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+}
+
+.grand-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  margin-top: 15px;
+}
+
+.grand-total-label {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: white;
+}
+
+.grand-total-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: white;
+}
+
+/* Generate PDF Button */
+.btn-generate-pdf {
+  width: 100%;
+  padding: 18px;
+  background: #ff6b35;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+}
+
+.btn-generate-pdf:hover {
+  background: #e55a2b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+}
+
+.btn-generate-pdf:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+
+  .products-card,
+  .total-card {
+    padding: 20px;
+  }
+
+  .products-header {
+    display: none;
+  }
+
+  .product-row {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 25px 0;
+    border-bottom: 2px solid #e0e0e0;
+  }
+
+  .product-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .quantity-controls,
+  .price-input-container,
+  .subtotal {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .price-input {
+    max-width: 150px;
+  }
+
+  .grand-total {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .grand-total-label {
+    font-size: 1.1rem;
+  }
+
+  .grand-total-value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding: 15px;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .products-card,
+  .total-card {
+    padding: 15px;
+  }
+}

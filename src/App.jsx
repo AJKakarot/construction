@@ -2,30 +2,66 @@ import React, { useState } from 'react'
 import jsPDF from 'jspdf'
 import './App.css'
 
+// Product data with units
+const productData = {
+  Cement: { unit: 'bags', allowDecimal: false },
+  Maorang: { unit: 'cubic feet', allowDecimal: true },
+  Gitti: { unit: 'cubic feet', allowDecimal: true },
+  Sariya: { unit: 'kg', allowDecimal: true },
+  Ring: { unit: 'pieces', allowDecimal: false },
+  Sand: { unit: 'cubic feet', allowDecimal: true },
+  Bricks: { unit: 'pieces', allowDecimal: false },
+  Tiles: { unit: 'sq ft', allowDecimal: true },
+  Paint: { unit: 'liters', allowDecimal: true },
+  'Steel Bars': { unit: 'kg', allowDecimal: true },
+  Water: { unit: 'liters', allowDecimal: true },
+  Wire: { unit: 'kg', allowDecimal: true },
+  Pipe: { unit: 'meters', allowDecimal: true },
+  'Binding Wire': { unit: 'kg', allowDecimal: true },
+  'Wood Planks': { unit: 'cubic feet', allowDecimal: true },
+  'PVC Pipes': { unit: 'meters', allowDecimal: true },
+  'Electrical Fittings': { unit: 'pieces', allowDecimal: false }
+}
+
 // ProductRow Component
-const ProductRow = ({ product, quantity, price, onQuantityChange, onPriceChange }) => {
+const ProductRow = ({ product, quantity, price, unit, allowDecimal, onQuantityChange, onPriceChange }) => {
   const subtotal = (parseFloat(price) || 0) * quantity
 
   return (
     <div className="product-row">
-      <div className="product-name">{product}</div>
+      <div className="product-info">
+        <div className="product-name">{product}</div>
+        <div className="product-unit">{unit}</div>
+      </div>
       
-      <div className="quantity-controls">
-        <button 
-          className="btn btn-minus" 
-          onClick={() => onQuantityChange(Math.max(0, quantity - 1))}
-          aria-label="Decrease quantity"
-        >
-          -
-        </button>
-        <span className="quantity-display">{quantity}</span>
-        <button 
-          className="btn btn-plus" 
-          onClick={() => onQuantityChange(quantity + 1)}
-          aria-label="Increase quantity"
-        >
-          +
-        </button>
+      <div className="quantity-section">
+        <div className="quantity-controls">
+          <button 
+            className="btn btn-minus" 
+            onClick={() => onQuantityChange(Math.max(0, quantity - (allowDecimal ? 0.1 : 1)))}
+            aria-label="Decrease quantity"
+          >
+            -
+          </button>
+          <input
+            type="number"
+            className="quantity-input"
+            value={quantity}
+            onChange={(e) => {
+              const val = parseFloat(e.target.value) || 0
+              onQuantityChange(Math.max(0, val))
+            }}
+            min="0"
+            step={allowDecimal ? 0.1 : 1}
+          />
+          <button 
+            className="btn btn-plus" 
+            onClick={() => onQuantityChange(quantity + (allowDecimal ? 0.1 : 1))}
+            aria-label="Increase quantity"
+          >
+            +
+          </button>
+        </div>
       </div>
       
       <div className="price-input-container">
@@ -50,22 +86,22 @@ const ProductRow = ({ product, quantity, price, onQuantityChange, onPriceChange 
 
 // Main App Component
 function App() {
-  const products = ['Cement', 'Maorang', 'Gitti', 'Sariya', 'Ring']
+  const products = Object.keys(productData)
   
-  const [quantities, setQuantities] = useState({
-    Cement: 0,
-    Maorang: 0,
-    Gitti: 0,
-    Sariya: 0,
-    Ring: 0
+  const [quantities, setQuantities] = useState(() => {
+    const initial = {}
+    products.forEach(product => {
+      initial[product] = 0
+    })
+    return initial
   })
   
-  const [prices, setPrices] = useState({
-    Cement: '',
-    Maorang: '',
-    Gitti: '',
-    Sariya: '',
-    Ring: ''
+  const [prices, setPrices] = useState(() => {
+    const initial = {}
+    products.forEach(product => {
+      initial[product] = ''
+    })
+    return initial
   })
 
   // Handle quantity change for a product
@@ -103,16 +139,16 @@ function App() {
     const pageWidth = doc.internal.pageSize.getWidth()
     
     // Header Background
-    doc.setFillColor(102, 126, 234) // Purple gradient color
+    doc.setFillColor(102, 126, 234)
     doc.rect(0, 0, pageWidth, 35, 'F')
     
-    // Title (on the left side)
+    // Title
     doc.setTextColor(255, 255, 255)
     doc.setFontSize(22)
     doc.setFont(undefined, 'bold')
     doc.text('Construction Material Bill', 15, 22)
     
-    // Date (below title)
+    // Date
     doc.setFontSize(10)
     doc.setFont(undefined, 'normal')
     const date = new Date().toLocaleDateString('en-IN', { 
@@ -122,20 +158,21 @@ function App() {
     })
     doc.text(`Date: ${date}`, 15, 30)
     
-    // Reset text color for content
+    // Reset text color
     doc.setTextColor(0, 0, 0)
     
-    // Table header with background
+    // Table header
     let y = 50
     doc.setFillColor(240, 240, 240)
     doc.rect(15, y - 8, pageWidth - 30, 10, 'F')
     
-    doc.setFontSize(11)
+    doc.setFontSize(10)
     doc.setFont(undefined, 'bold')
     doc.setTextColor(50, 50, 50)
     doc.text('Product', 20, y)
-    doc.text('Quantity', 85, y)
-    doc.text('Price', 120, y)
+    doc.text('Qty', 75, y)
+    doc.text('Unit', 95, y)
+    doc.text('Price', 125, y)
     doc.text('Subtotal', 155, y)
     
     // Draw header underline
@@ -146,7 +183,7 @@ function App() {
     // Table data
     y = 62
     doc.setFont(undefined, 'normal')
-    doc.setFontSize(10)
+    doc.setFontSize(9)
     doc.setTextColor(0, 0, 0)
     
     let rowCount = 0
@@ -154,6 +191,7 @@ function App() {
       const quantity = quantities[product]
       const price = parseFloat(prices[product]) || 0
       const subtotal = calculateSubtotal(product)
+      const unit = productData[product].unit
       
       if (quantity > 0 || price > 0) {
         // Alternating row background
@@ -168,21 +206,36 @@ function App() {
         doc.line(15, y + 2, pageWidth - 15, y + 2)
         
         doc.text(product, 20, y)
-        doc.text(quantity.toString(), 85, y)
-        // Format price as integer (no decimals)
+        
+        // Format quantity with unit
+        const quantityStr = productData[product].allowDecimal 
+          ? quantity.toFixed(1) 
+          : Math.round(quantity).toString()
+        doc.text(quantityStr, 75, y)
+        doc.text(unit, 95, y)
+        
+        // Format price as integer
         const priceInt = Math.round(price)
         const priceFormatted = priceInt.toLocaleString('en-IN')
-        doc.text(`Rs. ${priceFormatted}`, 120, y)
+        doc.text(`Rs. ${priceFormatted}`, 125, y)
+        
         // Format subtotal as integer
         const subtotalInt = Math.round(subtotal)
         const subtotalFormatted = subtotalInt.toLocaleString('en-IN')
         doc.text(`Rs. ${subtotalFormatted}`, 155, y)
+        
         y += 10
         rowCount++
+        
+        // Page break if needed
+        if (y > 270) {
+          doc.addPage()
+          y = 20
+        }
       }
     })
     
-    // Grand Total section
+    // Grand Total
     const grandTotal = calculateGrandTotal()
     y += 5
     
@@ -203,19 +256,17 @@ function App() {
     doc.setTextColor(255, 255, 255)
     doc.text('Grand Total:', 120, y + 2)
     doc.setFontSize(16)
-    // Format grand total as integer
     const grandTotalInt = Math.round(grandTotal)
     const grandTotalFormatted = grandTotalInt.toLocaleString('en-IN')
     const grandTotalText = `Rs. ${grandTotalFormatted}`
     doc.text(grandTotalText, pageWidth - 20, y + 2, { align: 'right' })
     
-    // Footer line
+    // Footer
+    const footerY = doc.internal.pageSize.getHeight() - 15
     doc.setDrawColor(200, 200, 200)
     doc.setLineWidth(0.5)
-    const footerY = doc.internal.pageSize.getHeight() - 15
     doc.line(15, footerY, pageWidth - 15, footerY)
     
-    // Footer text
     doc.setFontSize(8)
     doc.setFont(undefined, 'normal')
     doc.setTextColor(150, 150, 150)
@@ -246,6 +297,8 @@ function App() {
               product={product}
               quantity={quantities[product]}
               price={prices[product]}
+              unit={productData[product].unit}
+              allowDecimal={productData[product].allowDecimal}
               onQuantityChange={(newQuantity) => handleQuantityChange(product, newQuantity)}
               onPriceChange={(newPrice) => handlePriceChange(product, newPrice)}
             />
@@ -260,7 +313,9 @@ function App() {
               if (quantities[product] > 0 || parseFloat(prices[product]) > 0) {
                 return (
                   <div key={product} className="subtotal-item">
-                    <span className="subtotal-product">{product}:</span>
+                    <span className="subtotal-product">
+                      {product} ({productData[product].unit}):
+                    </span>
                     <span className="subtotal-value">
                       ₹{subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
